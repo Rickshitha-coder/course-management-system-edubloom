@@ -9,7 +9,13 @@ const enrollmentSchema = new mongoose.Schema(
             enum: ["active", "completed", "withdrawn"],
             default: "active"
         },
-        enrolledAt: { type: Date, default: Date.now }
+        enrolledAt: { type: Date, default: Date.now },
+        // Administrator decision on the enrollment request (existing "Manage Enrollments" workflow)
+        approvalStatus: {
+            type: String,
+            enum: ["Pending", "Approved", "Rejected"],
+            default: "Pending"
+        }
     },
     { timestamps: true }
 );

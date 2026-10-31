@@ -10,5 +10,6 @@ router.get("/me", authorizeRoles("student"), controller.getMyEnrollments);
 router.post("/", authorizeRoles("student"), controller.enroll);
 router.delete("/:courseId", authorizeRoles("student"), controller.unenroll);
 router.get("/", authorizeRoles("admin"), controller.getAllEnrollments);
+router.put("/:id/approval", authorizeRoles("admin"), controller.setApproval);
 
 module.exports = router;

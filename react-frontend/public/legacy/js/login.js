@@ -9,6 +9,57 @@ let currentRole = "student";
 //==========================================
 const API_URL = window.__API_URL__ || "http://localhost:3001/api/v1";
 
+async function hydrateStudent(email, token) {
+    const headers = { Authorization: "Bearer " + token };
+
+    const [enrollRes, progressRes] = await Promise.all([
+        fetch(API_URL + "/enrollments/me", { headers }),
+        fetch(API_URL + "/progress/me", { headers })
+    ]);
+
+    const enrollments = enrollRes.ok ? (await enrollRes.json()).enrollments || [] : [];
+    const progress = progressRes.ok ? (await progressRes.json()).progress || [] : [];
+
+    const key = email + "_enrolledCourses";
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem(key)) || []; } catch (e) {}
+    list = list.filter((c) => c && c.title);
+
+    enrollments.forEach((item) => {
+        const c = item.course;
+        if (!c || !c.courseName) return;
+        if (item.approvalStatus === "Rejected") return;
+        if (list.some((x) => x.title === c.courseName)) return;
+
+        list.push({
+            title: c.courseName, instructor: c.instructor, duration: c.duration,
+            level: c.level, image: c.image, category: c.category, overview: c.overview,
+            videos: c.videos, modules: c.modules, courseKey: c._id || c.id, id: c._id || c.id
+        });
+    });
+
+    localStorage.setItem(key, JSON.stringify(list));
+
+    progress.forEach((p) => {
+        const title = p.course && p.course.courseName;
+        if (!title) return;
+
+        const base = email + "_" + title;
+        const saved = Number(localStorage.getItem(base + "_progress")) || 0;
+
+        // Only fill in progress this browser does not already have
+        if (saved >= p.progressPercentage) return;
+
+        const done = Array.from({ length: p.completedLessons }, (_, i) => i);
+        localStorage.setItem(base + "_videos", JSON.stringify(done));
+        localStorage.setItem(base + "_totalVideos", String(p.totalLessons));
+        localStorage.setItem(base + "_progress", String(p.progressPercentage));
+        if (p.progressPercentage >= 100) {
+            localStorage.setItem(base + "_completed", "true");
+        }
+    });
+}
+
 async function authenticate(role, email, password) {
     const invalid = role === "admin"
         ? "Invalid Administrator Email or Password."
@@ -84,6 +135,17 @@ async function authenticate(role, email, password) {
     localStorage.setItem("students", JSON.stringify(students));
     localStorage.removeItem("loggedInAdmin");
     localStorage.setItem("loggedInStudent", JSON.stringify(record));
+
+    // Bring this student's enrollments and progress from the database
+    // (so they appear on any browser or device). Never blocks the login.
+    try {
+        await Promise.race([
+            hydrateStudent(user.email, data.token),
+            new Promise((resolve) => setTimeout(resolve, 8000))
+        ]);
+    } catch (error) {
+        console.warn("Could not load saved courses:", error);
+    }
 
     return { success: true, message: "Student Login Successful.", user };
 }

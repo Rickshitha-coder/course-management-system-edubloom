@@ -431,6 +431,13 @@ window.onload = async function () {
 
     await fetchCourses();
 
+    if (window.__loadAdminData) {
+        await window.__loadAdminData();
+    }
+
+    enrollments =
+        JSON.parse(localStorage.getItem("enrolledCourses")) || [];
+
     initializeDashboard();
 
 };
@@ -442,6 +449,10 @@ window.onload = async function () {
 setInterval(async () => {
 
     await fetchCourses();
+
+    if (window.__loadAdminData) {
+        await window.__loadAdminData();
+    }
 
     enrollments =
         JSON.parse(localStorage.getItem("enrolledCourses")) || [];

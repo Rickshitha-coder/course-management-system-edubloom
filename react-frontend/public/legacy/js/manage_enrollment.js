@@ -257,7 +257,7 @@ statusFilter.addEventListener("change", function(){
 // APPROVE ENROLLMENT
 // =========================================
 
-function approveEnrollment() {
+async function approveEnrollment() {
 
     if (selectedIndex === -1) {
 
@@ -273,6 +273,10 @@ function approveEnrollment() {
         "enrolledCourses",
         JSON.stringify(enrollments)
     );
+
+    if (window.__saveApproval) {
+        await window.__saveApproval(enrollments[selectedIndex], "Approved");
+    }
 
     // Let the student know their enrollment was approved, and let
     // them keep their place in the course (unchanged).
@@ -300,7 +304,7 @@ function approveEnrollment() {
 // REJECT ENROLLMENT
 // =========================================
 
-function rejectEnrollment() {
+async function rejectEnrollment() {
 
     if (selectedIndex === -1) {
 
@@ -316,6 +320,10 @@ function rejectEnrollment() {
         "enrolledCourses",
         JSON.stringify(enrollments)
     );
+
+    if (window.__saveApproval) {
+        await window.__saveApproval(enrollments[selectedIndex], "Rejected");
+    }
 
     // Let the student know their enrollment was rejected, and
     // remove the course from their personal course list so "My
@@ -500,7 +508,11 @@ function loadRecentActivity() {
 // REFRESH ENROLLMENTS
 // =========================================
 
-function refreshEnrollments() {
+async function refreshEnrollments() {
+
+    if (window.__loadAdminData) {
+        await window.__loadAdminData();
+    }
 
     enrollments =
 
