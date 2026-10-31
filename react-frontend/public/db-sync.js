@@ -55,11 +55,13 @@
         });
     }
 
-    function enroll(title) {
+    // explicit = the student just clicked Enroll. Background syncing is never explicit,
+    // so a course the administrator rejected is not brought back by it.
+    function enroll(title, explicit) {
         return findCourseId(title).then(function (courseId) {
             if (!courseId) return null;
-            return call("POST", "/enrollments", { courseId: courseId })
-                .then(function () { return courseId; }); // 409 = already enrolled: fine
+            return call("POST", "/enrollments", { courseId: courseId, explicit: explicit === true })
+                .then(function (response) { return response.ok || response.status === 409 ? courseId : null; });
         });
     }
 
@@ -77,9 +79,9 @@
         });
     }
 
-    function syncEnrolled(list) {
+    function syncEnrolled(list, explicit) {
         (list || []).forEach(function (course) {
-            if (course && course.title) enroll(course.title).catch(function () {});
+            if (course && course.title) enroll(course.title, explicit).catch(function () {});
         });
     }
 
@@ -92,13 +94,21 @@
         }, 400);
     }
 
-    function onWrite(key) {
+    function onWrite(key, previousValue) {
         var s = student();
         if (!s || !token() || !s.email) return;
         var prefix = s.email + "_";
 
         if (key === prefix + "enrolledCourses") {
-            try { syncEnrolled(JSON.parse(localStorage.getItem(key))); } catch (e) {}
+            // Only courses ADDED by this write are new enrollments the student chose
+            try {
+                var before = {};
+                (JSON.parse(previousValue) || []).forEach(function (c) { if (c && c.title) before[c.title] = true; });
+                var added = (JSON.parse(localStorage.getItem(key)) || []).filter(function (c) {
+                    return c && c.title && !before[c.title];
+                });
+                syncEnrolled(added, true);
+            } catch (e) {}
         } else if (key.indexOf(prefix) === 0 && /_progress$/.test(key)) {
             scheduleProgress(key.slice(prefix.length, -"_progress".length), prefix);
         }
@@ -106,9 +116,13 @@
 
     var nativeSet = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key) {
+        var previous = null;
+        if (this === window.localStorage) {
+            try { previous = this.getItem(key); } catch (e) {}
+        }
         nativeSet.apply(this, arguments);
         if (this === window.localStorage) {
-            try { onWrite(String(key)); } catch (e) {}
+            try { onWrite(String(key), previous); } catch (e) {}
         }
     };
 
@@ -122,7 +136,7 @@
         } catch (e) { return; }
 
         var prefix = s.email + "_";
-        try { syncEnrolled(JSON.parse(localStorage.getItem(prefix + "enrolledCourses"))); } catch (e) {}
+        try { syncEnrolled(JSON.parse(localStorage.getItem(prefix + "enrolledCourses")), false); } catch (e) {}
 
         for (var i = 0; i < localStorage.length; i++) {
             var key = localStorage.key(i);

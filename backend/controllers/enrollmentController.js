@@ -29,6 +29,19 @@ async function enroll(req, res, next) {
             return res.status(409).json({ message: "Already enrolled in this course" });
         }
 
+        // A request the administrator rejected stays rejected unless the student
+        // deliberately asks again (explicit: true). Automatic background syncing
+        // from the browser must never bring it back.
+        if (
+            enrollment &&
+            enrollment.approvalStatus === "Rejected" &&
+            req.body.explicit !== true
+        ) {
+            return res.status(403).json({
+                message: "This enrollment was rejected by the administrator. Enroll again from the course page to ask again later."
+            });
+        }
+
         if (enrollment) {
             enrollment.status = "active";
             enrollment.approvalStatus = "Pending";

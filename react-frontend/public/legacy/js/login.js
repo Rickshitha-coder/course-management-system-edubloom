@@ -25,6 +25,14 @@ async function hydrateStudent(email, token) {
     try { list = JSON.parse(localStorage.getItem(key)) || []; } catch (e) {}
     list = list.filter((c) => c && c.title);
 
+    // Courses the administrator rejected must not stay in (or return to) the student's list
+    const rejected = new Set(
+        enrollments
+            .filter((item) => item.approvalStatus === "Rejected" && item.course)
+            .map((item) => item.course.courseName)
+    );
+    list = list.filter((c) => !rejected.has(c.title));
+
     enrollments.forEach((item) => {
         const c = item.course;
         if (!c || !c.courseName) return;
