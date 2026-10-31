@@ -17,6 +17,22 @@
     // Old pages also "save to server" with http://localhost:3001/api/<anything else>.
     // That server no longer exists, and a live website must never call the
     // visitor's own computer, so those calls are answered locally and ignored.
+    // Repair saved enrollment lists that contain empty (null) entries
+    try {
+        for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && /(^|_)enrolledCourses$/.test(k)) {
+                var list = JSON.parse(localStorage.getItem(k));
+                if (Array.isArray(list)) {
+                    var clean = list.filter(function (c) { return c && typeof c === "object"; });
+                    if (clean.length !== list.length) {
+                        localStorage.setItem(k, JSON.stringify(clean));
+                    }
+                }
+            }
+        }
+    } catch (e) {}
+
     var LEGACY_OTHER = /^https?:\/\/localhost:3001\/api\/(?!v1\/|courses(?:[\/?#]|$))/;
 
     var LEGACY_COURSES = /^https?:\/\/[^\/]+\/api\/courses(\/[^?#\/]+)?(\?[^#]*)?$/;

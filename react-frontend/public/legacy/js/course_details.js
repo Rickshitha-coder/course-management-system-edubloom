@@ -1254,7 +1254,7 @@ localStorage.getItem(studentKey+"_enrolledCourses")
 const enrollBtn =
 document.querySelector(".enroll-btn");
 
-if(enrolled.some(c=>c.title===course.title)){
+if(enrolled.some(c=>c && c.title===course.title)){
 
     enrollBtn.textContent="Already Enrolled";
 
@@ -1273,6 +1273,15 @@ course.title +
 
 function enrollCourse(){
 
+    // The course comes from the API; on a slow first load it may not be ready yet
+    if(!course){
+
+        alert("The course is still loading. Please wait a moment and try again.");
+
+        return;
+
+    }
+
     let enrolledCourses =
         JSON.parse(
             localStorage.getItem(
@@ -1280,10 +1289,13 @@ function enrollCourse(){
             )
         ) || [];
 
+    // Remove any broken (empty) entries saved by an earlier failed click
+    enrolledCourses = enrolledCourses.filter(c => c && c.title);
+
 
     const already =
         enrolledCourses.some(
-            c => c.title === course.title
+            c => c && c.title === course.title
         );
 
 
