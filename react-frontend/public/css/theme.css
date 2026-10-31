@@ -255,7 +255,7 @@ img{ max-width:100%; display:block; }
   display:flex; align-items:center; justify-content:space-between;
   padding:0 8px 22px;
 }
-.sidebar__close{ display:none; }
+.sidebar .sidebar__close{ display:none; }
 
 .sidebar__nav{ flex:1; overflow-y:auto; padding-top:6px; }
 
@@ -401,7 +401,7 @@ img{ max-width:100%; display:block; }
   .sidebar{ transform:translateX(-100%); box-shadow:var(--shadow-lg); }
   body.nav-open .sidebar{ transform:translateX(0); }
   body.nav-open .sidebar-scrim{ display:block; }
-  .sidebar__close{ display:inline-flex; }
+  .sidebar .sidebar__close{ display:inline-flex; }
   .app-main{ margin-left:0; }
   .nav-toggle{ display:inline-flex; }
 }
