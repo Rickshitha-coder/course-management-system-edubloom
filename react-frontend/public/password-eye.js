@@ -6,6 +6,13 @@
     var EYE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
     var EYE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.9 17.9A10.9 10.9 0 0 1 12 19c-6.4 0-10-7-10-7a18.7 18.7 0 0 1 5.1-5.9"></path><path d="M9.9 4.2A10.4 10.4 0 0 1 12 4c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.2 3.2"></path><path d="M14.1 14.1A3 3 0 1 1 9.9 9.9"></path><path d="M1 1l22 22"></path></svg>';
 
+    // Edge draws its own reveal icon; hide it so only ours shows
+    var style = document.createElement("style");
+    style.textContent =
+        'input[type="password"]::-ms-reveal,input[type="password"]::-ms-clear,' +
+        'input[type="text"]::-ms-clear{display:none !important;}';
+    (document.head || document.documentElement).appendChild(style);
+
     function place(button, input) {
         var parent = input.offsetParent || input.parentElement;
         var top = input.offsetTop + input.offsetHeight / 2;

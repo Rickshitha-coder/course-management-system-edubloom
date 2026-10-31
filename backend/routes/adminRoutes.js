@@ -10,6 +10,8 @@ router.use(authMiddleware);
 router.use(authorizeRoles("admin"));
 
 router.get("/", controller.getAdmins);
+router.post("/", controller.createAdmin);
+router.put("/:id", param("id").isMongoId().withMessage("Invalid admin ID"), validateRequest, controller.renameAdmin);
 router.post(
     "/:id/reset-password",
     param("id").isMongoId().withMessage("Invalid admin ID"),

@@ -77,15 +77,24 @@
         });
     };
 
-    // Clear the JWT whenever any Logout button is pressed (capture phase, so it
-    // runs before each page's own logout handler redirects away).
+    // Logout button on EVERY page: end the session, then go to the login page.
+    // (Some pages also have their own logout code; both doing the same job is harmless.)
     document.addEventListener("click", function (event) {
         var target = event.target;
-        if (target && target.closest && target.closest("#logoutBtn")) {
-            try {
-                sessionStorage.removeItem("token");
-                sessionStorage.removeItem("role");
-            } catch (e) {}
-        }
+        if (!target || !target.closest || !target.closest("#logoutBtn")) return;
+
+        try {
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("role");
+            sessionStorage.removeItem("dbSyncDone");
+            localStorage.removeItem("loggedInStudent");
+            localStorage.removeItem("loggedInAdmin");
+        } catch (e) {}
+
+        setTimeout(function () {
+            if (location.pathname !== "/login" && location.pathname !== "/login.html") {
+                location.href = "/login";
+            }
+        }, 100);
     }, true);
 })();

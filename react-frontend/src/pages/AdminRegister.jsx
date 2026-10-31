@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import PageCss from "../components/PageCss";
-import LegacyScript from "../components/LegacyScript";
 
 export default function AdminRegister() {
     return (
@@ -62,42 +61,14 @@ export default function AdminRegister() {
                         </Link>
                         <p className="auth__crumb">Login Portal</p>
                         <h1 className="auth__title">Administrator Registration</h1>
-                        <form id="adminRegisterForm">
-                            <div className="field-grid">
-                                <div className="field">
-                                    <label htmlFor="adminName">Administrator Name</label>
-                                    <input type="text" placeholder="Enter Full Name" id="adminName" required autoComplete="name" />
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="adminId">Administrator ID</label>
-                                    <input type="text" placeholder="Enter Administrator ID" id="adminId" required />
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="adminEmail">Email Address</label>
-                                    <input type="email" placeholder="Enter Email" id="adminEmail" required autoComplete="email" />
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="designation">Designation</label>
-                                    <select id="designation" required>
-                                        <option value="">Select Designation</option>
-                                        <option>Principal</option>
-                                        <option>Head of Department (HOD)</option>
-                                        <option>Faculty</option>
-                                        <option>Course Coordinator</option>
-                                        <option>System Administrator</option>
-                                    </select>
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="adminPassword">Password</label>
-                                    <input type="password" placeholder="Create Password" id="adminPassword" required autoComplete="new-password" />
-                                </div>
-                                <div className="field">
-                                    <label htmlFor="adminConfirmPassword">Confirm Password</label>
-                                    <input type="password" placeholder="Confirm Password" id="adminConfirmPassword" required autoComplete="new-password" />
-                                </div>
-                            </div>
-                            <button type="submit" id="adminBtn" className="btn btn--primary btn--lg btn--block">Register</button>
-                        </form>
+                        <div role="note" style={{ background: "#eef7f1", border: "1px solid #b9dcc6", borderRadius: 12, padding: 16, margin: "0 0 20px" }}>
+                            <p style={{ margin: "0 0 8px", fontWeight: 600 }}>Administrator accounts are created by an existing administrator.</p>
+                            <ol style={{ margin: 0, paddingLeft: 20 }}>
+                                <li>An administrator logs in.</li>
+                                <li>They open <strong>Manage Admins</strong> and use <strong>Add administrator</strong>.</li>
+                                <li>The new administrator then logs in with the email and password they were given.</li>
+                            </ol>
+                        </div>
                         <p className="auth__alt">
                             Already have an account?{" "}
                             <Link to="/login" className="text-link">Login Here</Link>
@@ -106,7 +77,6 @@ export default function AdminRegister() {
                 </main>
             </div>
 
-            <LegacyScript src="/legacy/js/admin_register.js" />
         </>
     );
 }

@@ -36,13 +36,13 @@ export const NAV = {
                     "key": "messages",
                     "label": "Messages",
                     "route": "/messages",
-                    "icon": "users"
+                    "icon": "mail"
                 },
                 {
                     "key": "password",
-                    "label": "Change Password",
+                    "label": "My Account",
                     "route": "/change-password",
-                    "icon": "users"
+                    "icon": "user"
                 }
             ]
         }
@@ -83,19 +83,19 @@ export const NAV = {
                     "key": "enroll",
                     "label": "Manage Enrollments",
                     "route": "/manage-enrollment",
-                    "icon": "users"
+                    "icon": "clipboardcheck"
                 },
                 {
                     "key": "students",
                     "label": "Manage Students",
                     "route": "/manage-students",
-                    "icon": "users"
+                    "icon": "cap"
                 },
                 {
                     "key": "admins",
                     "label": "Manage Admins",
                     "route": "/manage-admins",
-                    "icon": "users"
+                    "icon": "shield"
                 }
             ]
         },
@@ -106,13 +106,13 @@ export const NAV = {
                     "key": "messages",
                     "label": "Messages",
                     "route": "/messages",
-                    "icon": "users"
+                    "icon": "mail"
                 },
                 {
                     "key": "password",
-                    "label": "Change Password",
+                    "label": "My Account",
                     "route": "/change-password",
-                    "icon": "users"
+                    "icon": "user"
                 }
             ]
         }
