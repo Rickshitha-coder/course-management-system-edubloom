@@ -407,5 +407,5 @@ Portfolio: https://rickshitha2006.github.io/Portfolio/
 </p>
 
 <p align="center">
-  Made with by Rickshitha A.
+  Made by Rickshitha A.
 </p>
